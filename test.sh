@@ -2,6 +2,9 @@
 
 docker_ip="$(ip -4 -j a show dev docker0 | jq -r ".[] | .addr_info[] | .local")"
 printf "%s" "{\"release\":{\"upload_url\":\"http://$docker_ip:8000/\",\"tag_name\":\"test\"}}" > event/event.json
+cargo build --release --manifest-path ./http-post-capture/Cargo.toml
+./http-post-capture/target/release/http-post-capture -l "$docker_ip:8000" -o "output" &
+listener_pid="$!"
 
 TARGETS="$(cat targets)"
 
@@ -40,5 +43,8 @@ for target in $TARGETS; do
     -e RUSTTARGET="$target" \
     -e SRC_DIR="$2" \
     -e GITHUB_TOKEN="" \
+    -e MINIFY="true" \
     --rm -it rust-build
 done
+
+kill "$listener_pid"

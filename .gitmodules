@@ -1,0 +1,3 @@
+[submodule "http-post-capture"]
+	path = http-post-capture
+	url = https://github.com/Douile/http-post-capture.git
