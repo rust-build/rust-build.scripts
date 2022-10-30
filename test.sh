@@ -46,8 +46,13 @@ for target in $TARGETS; do
     -e RUSTTARGET="$target" \
     -e SRC_DIR="$2" \
     -e GITHUB_TOKEN="" \
-    --rm -it rust-build
+    -e TOOLCHAIN_VERSION="nightly" \
+    -e ARCHIVE_TYPES="zip tar.zst" \
+    -e GITHUB_OUTPUT="/proc/self/fd/0" \
+    --rm -t rust-build
 done
+
+printf "\033[31;1mCleaning up...\033[0m\n"
 
 kill "$listener_pid"
 
